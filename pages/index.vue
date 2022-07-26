@@ -13,7 +13,7 @@
         id="Search"
         class="border border-gray-600 rounded py-2 px-4 mr-2"
         v-model="searchText"
-        placeholder="Search by ID"
+        placeholder="Enter category"
       >
       <button
         type="submit"
@@ -33,15 +33,15 @@
         <p class="font-bold mb-2">Search results:</p>
         <div class="flex flex-wrap">
           <div
-            v-for="getTransactionsByAccount in searchResults"
-            :key="getTransactionsByAccount.transactionId"
+            v-for="transaction in searchResults"
+            :key="transaction.transactionId"
             class="mr-4 mb-2 flex"
           >
             <NuxtLink
-              :to="`/account/${getTransactionsByAccount.account.accountId}`"
+              :to="`/transactions/${transaction.transactionsId}`"
               class="border rounded px-2 py-1 text-gray-800 border-gray-800 text-sm mt-2 whitespace-no-wrap"
             >
-              {{ getTransactionsByAccount.category }}
+              {{ transaction.category }}
             </NuxtLink>
           </div>
         </div>
@@ -57,7 +57,7 @@
     <div class="grid grid-cols-3 gap-8">
       <article
         v-for="transaction in transactions"
-        :key="transaction.id"
+        :key="transaction.transactionId"
         class="flex flex-col items-start"
       >
         <h2 class="font-bold font-mono text-green-400">{{ transaction.account.username }}</h2>
@@ -66,7 +66,7 @@
           <p>Category: {{ transaction.category }}</p>
         </div>
         <NuxtLink
-          :to="`/account/${transaction.account.accountId}`"
+          :to="`/transactions/${transaction.transactionId}`"
           class="hover:bg-green-200 border rounded px-2 py-1 text-gray-800 border-gray-800 text-sm mt-2 font-bold font-mono"
         >
           Read more
@@ -93,9 +93,9 @@ const ALL_TRANSACTIONS_QUERY = gql`
 }
 `;
 
-const TRANSACTIONS_BY_ID_QUERY = gql`
-  mutation GetTransactionsByAccount($input: GetTransactionInput) {
-  getTransactionsByAccount(input: $input) {
+const TRANSACTIONS_BY_CATEGORY_QUERY = gql`
+  query TransactionsByCategory($input: getTransactionsByCategoryInput) {
+  transactionsByCategory(input: $input) {
     transactionId
     category
     date
@@ -127,15 +127,17 @@ export default {
     async search() {
       try {
         const res = await this.$apollo.query({
-          query: TRANSACTIONS_BY_ID_QUERY,
+          query: TRANSACTIONS_BY_CATEGORY_QUERY,
           variables: {
-            input: this.searchText,
+            input: {
+            category: this.searchText
+            }
           },
         });
 
         if (res) {
           this.loading = false;
-          const { results } = res.data.getTransactionsByAccount;
+          const { results } = res.data.transactionsByCategory;
           this.searchResults = results;
         }
       } catch (err) {
@@ -143,6 +145,7 @@ export default {
         this.searchResults = [];
       }
     }
+    
   }
 }
 </script>
