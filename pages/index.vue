@@ -18,14 +18,14 @@
       <button
         type="submit"
         class="bg-gray-200 hover:bg-green-200 px-4 py-2 border border-gray-200 rounded"
-      >
+       >
         Search
       </button>
     </form>
     </div>
     <div v-if="loading">Loading..</div>
 
-    <div
+   <div
       v-if="searchResults"
       class="mb-8"
     >
@@ -33,15 +33,15 @@
         <p class="font-bold mb-2">Search results:</p>
         <div class="flex flex-wrap">
           <div
-            v-for="transaction in searchResults"
-            :key="transaction.transactionId"
+            v-for="transactionsByCategory in searchResults"
+            :key="transactionsByCategory.id"
             class="mr-4 mb-2 flex"
           >
             <NuxtLink
-              :to="`/transactions/${transaction.transactionsId}`"
+              :to="`/transactions/${transactionsByCategory.transactionsId}`"
               class="border rounded px-2 py-1 text-gray-800 border-gray-800 text-sm mt-2 whitespace-no-wrap"
             >
-              {{ transaction.category }}
+              {{ transactionsByCategory.category }}
             </NuxtLink>
           </div>
         </div>
@@ -116,7 +116,7 @@ export default {
   },
 
   data() {
-    return {
+    return { 
       searchText: '',
       searchResults: null,
       loading: false,
@@ -137,7 +137,7 @@ export default {
 
         if (res) {
           this.loading = false;
-          const { results } = res.data.transactionsByCategory;
+          const { results } = res.data;
           this.searchResults = results;
         }
       } catch (err) {
