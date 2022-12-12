@@ -23,6 +23,6 @@
     "@nuxt/types": "^2.15.8",
     "@nuxt/typescript-build": "^2.1.0",
     "@nuxtjs/tailwindcss": "^4.2.1",
-    "postcss": "^8.4.4"
+    "postcss": "^8.4.20"
   }
 }
